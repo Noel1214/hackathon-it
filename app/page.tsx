@@ -7,6 +7,7 @@ import { LuTrophy } from "react-icons/lu";
 
 import { IoMailOutline } from "react-icons/io5";
 import { BsTelephone } from "react-icons/bs";
+import Link from "next/link";
 
 
 
@@ -42,11 +43,14 @@ export default function Home() {
           </p>
 
           {/* Button */}
+          <Link href="/registration">
           <div className="mt-[3rem]">
             <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">
               Register Now
             </button>
           </div>
+          </Link>
+          
         </div>
       </div>
 
