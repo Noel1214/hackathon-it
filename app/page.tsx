@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import { LuCalendar } from "react-icons/lu";
 import { FaRegClock } from "react-icons/fa6";
 import { MdOutlineLocationOn } from "react-icons/md";
@@ -27,7 +27,7 @@ export default function Home() {
     <div className="">
       <div className="playfair-display text-[0.95rem] h-[12vh] flex flex-col justify-center items-center">
         <h1 className="text-[#5D829E]">Department of Information Technology</h1>
-        <h1 className="text-[#5D829E]">St. Joseph's College (Autonomous), Tiruchirappalli</h1>
+        <h1 className="text-[#5D829E]">St. Joseph&apos;s College (Autonomous), Tiruchirappalli</h1>
       </div>
       <div className="h-[80vh] flex items-center justify-center bg-gradient-to-b from-[#0a0a1a] to-[#0f0f2d] text-center">
         <div>
@@ -199,7 +199,7 @@ export default function Home() {
               <h3 className="playfair-display text-purple-400 font-semibold text-lg mb-4">
                 Department of IT
               </h3>
-              <p>St. Joseph's College (Autonomous)</p>
+              <p>St. Joseph&apos;s College (Autonomous)</p>
               <p>Tiruchirappalli - 620 002</p>
               <p>Tamil Nadu, India</p>
             </div>
