@@ -17,6 +17,8 @@ const TeamRegistration: React.FC = () => {
         city: "",
         phoneNumber: "",
         email: "",
+        password: "",          // 🔑 added
+        confirmPassword: "",
         teamSize: 1,
     });
 
@@ -48,6 +50,10 @@ const TeamRegistration: React.FC = () => {
         e.preventDefault();
 
         if (step === 1) {
+            if (teamLeader.password !== teamLeader.confirmPassword) {
+                alert("❌ Passwords do not match");
+                return;
+            }
             // Generate empty team member objects based on team size
             const members = Array.from({ length: teamLeader.teamSize - 1 }, (): TeamMember => ({
                 name: "",
@@ -58,7 +64,19 @@ const TeamRegistration: React.FC = () => {
             setStep(2);
         } else {
             // Final submission
-            const payload = { teamLeader, teamMembers };
+            const payload = {
+                teamLeader: {
+                    name: teamLeader.name,
+                    college: teamLeader.college,
+                    city: teamLeader.city,
+                    phoneNumber: teamLeader.phoneNumber,
+                    email: teamLeader.email,
+                    password: teamLeader.password,
+                    confirmPassword: teamLeader.confirmPassword,
+                    teamSize: teamMembers.length + 1,
+                },
+                teamMembers
+            };
 
             try {
                 const res = await fetch("/api/register", {
@@ -78,6 +96,8 @@ const TeamRegistration: React.FC = () => {
                         city: "",
                         phoneNumber: "",
                         email: "",
+                        password: "",          // 🔑 added
+                        confirmPassword: "",
                         teamSize: 1,
                     });
                     setTeamMembers([]);
@@ -212,7 +232,36 @@ const TeamRegistration: React.FC = () => {
                                     required
                                 />
                             </div>
+                            <div>
+                                <label className="block text-sm font-medium text-white mb-1">
+                                    Password *
+                                </label><input
+                                    type="password"
+                                    name="password"
+                                    value={teamLeader.password}
+                                    onChange={handleInputChange}
+                                    placeholder="Enter password"
+                                    className="w-full rounded-lg bg-black border border-gray-700 text-white px-4 py-2 focus:outline-none focus:border-purple-500"
 
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-white mb-1">
+                                    Confirm Password *
+                                </label>
+                                <input
+                                    type="password"
+                                    name="confirmPassword"
+                                    value={teamLeader.confirmPassword}
+                                    onChange={handleInputChange}
+
+                                    placeholder="Confirm password"
+                                    className="w-full rounded-lg bg-black border border-gray-700 text-white px-4 py-2 focus:outline-none focus:border-purple-500"
+
+                                    required
+                                />
+                            </div>
                             <div>
                                 <label className="block text-sm font-medium text-white mb-1">
                                     Total Team Size *
