@@ -14,7 +14,7 @@ import Link from "next/link";
 export default function Home() {
 
   const rules = [
-    "Teams must consist of 2-4 members",
+    "Teams must consist of 1-4 members",
     "All code must be original and created during the event",
     "Use of external APIs and libraries is allowed",
     "Projects must be submitted before the deadline",
@@ -44,13 +44,13 @@ export default function Home() {
 
           {/* Button */}
           <Link href="/registration">
-          <div className="mt-[3rem]">
-            <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">
-              Register Now
-            </button>
-          </div>
+            <div className="mt-[3rem]">
+              <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">
+                Register Now
+              </button>
+            </div>
           </Link>
-          
+
         </div>
       </div>
 
@@ -81,7 +81,7 @@ export default function Home() {
             <div className="bg-[#111] border border-purple-900/40 rounded-2xl p-6 text-center shadow-lg">
               <LuCalendar className="mx-auto mb-4 text-purple-400" size={40} />
               <h3 className="playfair-display text-lg font-semibold text-gray-200 mb-2">Date</h3>
-              <p className="text-2xl font-bold text-purple-400">Coming Soon</p>
+              <p className="text-2xl font-bold text-purple-400">September 16</p>
               <p className="text-sm text-gray-400 mt-1">Stay tuned for updates</p>
             </div>
 
@@ -89,7 +89,7 @@ export default function Home() {
             <div className="bg-[#111] border border-purple-900/40 rounded-2xl p-6 text-center shadow-lg">
               <FaRegClock className="mx-auto mb-4 text-purple-400" size={40} />
               <h3 className="playfair-display text-lg font-semibold text-gray-200 mb-2">Duration</h3>
-              <p className="text-2xl font-bold text-purple-400">24 Hours</p>
+              <p className="text-2xl font-bold text-purple-400">6 Hours</p>
               <p className="text-sm text-gray-400 mt-1">Non-stop coding</p>
             </div>
 
@@ -105,7 +105,7 @@ export default function Home() {
             <div className="bg-[#111] border border-purple-900/40 rounded-2xl p-6 text-center shadow-lg">
               <LuUsers className="mx-auto mb-4 text-purple-400" size={40} />
               <h3 className="playfair-display text-lg font-semibold text-gray-200 mb-2">Team Size</h3>
-              <p className="text-2xl font-bold text-purple-400">2-4 Members</p>
+              <p className="text-2xl font-bold text-purple-400">1-4 Members</p>
               <p className="text-sm text-gray-400 mt-1">Collaborate &amp; create</p>
             </div>
           </div>
