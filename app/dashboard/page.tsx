@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 interface TeamMember {
+    _id: string,
     name: string;
     email: string;
     phoneNumber: string;
@@ -26,6 +27,7 @@ interface TeamMember {
 
 interface TeamData {
     _id: string;
+    teamId: string,
     teamLeader: {
         name: string;
         college: string;
@@ -107,7 +109,6 @@ export default function Dashboard() {
     // ===== Save edits =====
     const handleSave = async () => {
         if (!team) return;
-
         setSaving(true);
         try {
             const res = await fetch(`/api/team/${team._id}`, {
@@ -118,6 +119,7 @@ export default function Dashboard() {
                 },
                 body: JSON.stringify({
                     teamLeader: formData,
+                    teamMembers: team.teamMembers, // ✅ include members too
                 }),
             });
 
@@ -132,6 +134,7 @@ export default function Dashboard() {
             setSaving(false);
         }
     };
+
 
     const handleLogout = async () => {
         try {
@@ -180,9 +183,14 @@ export default function Dashboard() {
                     <Shield className="text-purple-500 w-6 h-6" />
                     {/* ✅ Show text only on desktop */}
                     <div className="sm:block">
-                        <h1 className="text-lg font-bold text-white">Team Leader Portal</h1>
-                        <p className="text-sm text-gray-300">Welcome back, {team.teamLeader.name}</p>
+                        <h1 className="text-base sm:text-lg font-bold text-white">
+                            Team Leader Portal
+                        </h1>
+                        <p className="text-xs sm:text-sm text-gray-300">
+                            Welcome back, {team.teamLeader.name}
+                        </p>
                     </div>
+
                 </div>
 
                 {/* ✅ Desktop Logout button */}
@@ -195,7 +203,7 @@ export default function Dashboard() {
                 </button>
 
                 {/* Mobile Menu Toggle */}
-                <div className="sm:hidden">
+                {/* <div className="sm:hidden">
                     <button
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         className="p-2 rounded-md text-purple-400 hover:bg-purple-800/20 transition"
@@ -203,15 +211,15 @@ export default function Dashboard() {
                     >
                         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
-                </div>
+                </div> */}
 
                 {/* Mobile Dropdown Menu */}
-                <div
+                {/* <div
                     className={`absolute top-full left-0 w-full bg-black/95 border-b border-gray-800 flex-col gap-4 p-4 sm:hidden transition-all duration-300 ${mobileMenuOpen ? "flex opacity-100" : "hidden opacity-0"
                         }`}
                 >
                     <div className="flex flex-col gap-3">
-                        {/* ✅ Mobile Logout inside menu */}
+                        
                         <button
                             className="flex items-center gap-2 text-sm text-gray-300 hover:text-purple-400 transition"
                             onClick={handleLogout}
@@ -220,7 +228,7 @@ export default function Dashboard() {
                             <LogOut size={16} /> Logout
                         </button>
                     </div>
-                </div>
+                </div> */}
             </header>
 
 
@@ -232,12 +240,17 @@ export default function Dashboard() {
                             <User className="text-purple-400 w-8 h-8 sm:w-10 sm:h-10" />
                             <div>
                                 <h2 className="text-lg sm:text-xl font-semibold text-purple-400">{team.teamLeader.name}’s Team</h2>
-                                <p className="text-xs sm:text-sm text-gray-400">Team ID: {team._id}</p>
+                                <p className="text-xs sm:text-sm text-gray-400">Team ID: {team.teamId}</p>
                             </div>
                         </div>
                         <span className="bg-purple-700/80 px-3 py-1 rounded-full text-xs sm:text-sm text-white">
                             Confirmed
                         </span>
+                        <a href="upi://pay?pa=rakeshjoe52-1@oksbi&pn=Rakesh%20Joe&am=500&cu=INR&tn=HIT101">
+                            Pay ₹500 via GPay
+                        </a>
+
+
                     </CardContent>
                 </Card>
 
@@ -275,13 +288,11 @@ export default function Dashboard() {
                                 <CardContent className="p-4 sm:p-5">
                                     <h3 className="text-lg font-bold mb-4 text-purple-400">Team Members</h3>
                                     {team.teamMembers.length > 0 ? (
-                                        <ul className="space-y-3">
+                                        <ul className="space-y-3 text-white">
                                             {team.teamMembers.map((m) => (
-                                                <li key={m.email}>   {/* or m._id if available */}
-                                                    <p className="font-semibold text-white">{m.name}</p>
-                                                    <p className="text-xs sm:text-sm text-gray-400">{m.email}</p>
-                                                </li>
+                                                <li key={m._id || m.phoneNumber || m.name}>{m.name}{" - "}{m.phoneNumber}</li>
                                             ))}
+
                                         </ul>
 
                                     ) : (
@@ -291,6 +302,29 @@ export default function Dashboard() {
                             </Card>
                         </div>
 
+                        {/* 💳 Payment Card */}
+                        <Card className="bg-[#121214] border-purple-800/40 p-4 sm:p-6 mt-6">
+                            <CardContent className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                                <div>
+                                    <h3 className="text-lg font-bold text-purple-400 mb-2">💰 Team Payment</h3>
+                                    <p className="text-sm text-gray-300 mb-2">
+                                        Registration fee per person: <span className="font-semibold text-white">₹200</span>
+                                    </p>
+                                    <p className="text-sm text-gray-300 mb-2">
+                                        Total team members: <span className="font-semibold text-white">{team.teamMembers.length + 1}</span>
+                                    </p>
+                                    <p className="text-sm text-gray-300 mb-2">
+                                        Total amount: <span className="font-semibold text-white">₹{(team.teamMembers.length + 1) * 200}</span>
+                                    </p>
+                                </div>
+                                <a
+                                    href={`upi://pay?pa=rakeshjoe52-1@oksbi&pn=Rakesh%20Joe&am=${(team.teamMembers.length + 1) * 200}&cu=INR&tn=${team.teamId}`}
+                                    className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded text-sm sm:text-base"
+                                >
+                                    Pay via GPay
+                                </a>
+                            </CardContent>
+                        </Card>
                         {/* Event Info */}
                         <Card className="bg-[#121214] border-purple-800/40">
                             <CardContent className="p-4 sm:p-6 grid grid-cols-1 xs:grid-cols-3 gap-4 sm:gap-6 text-center">
@@ -306,65 +340,122 @@ export default function Dashboard() {
                     </TabsContent>
 
                     {/* 📝 Edit */}
+                    {/* 📝 Edit */}
                     <TabsContent value="edit" className="mt-6">
                         <Card className="bg-[#121214] border-purple-800/40 p-4 sm:p-6">
                             <h3 className="text-lg font-bold text-purple-400 mb-4">✏️ Edit Team Details</h3>
+
                             {!editing ? (
-                                <Button onClick={() => setEditing(true)} className="bg-purple-700 hover:bg-purple-600 w-full sm:w-auto">
+                                <Button
+                                    onClick={() => setEditing(true)}
+                                    className="bg-purple-700 hover:bg-purple-600 w-full sm:w-auto"
+                                >
                                     Start Editing
                                 </Button>
                             ) : (
-                                <div className="space-y-4">
-                                    <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
-                                        <div className="sm:col-span-2">
-                                            <label className="block text-sm text-gray-300 mb-1">Leader Name</label>
-                                            <input
-                                                className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
-                                                value={formData.name}
-                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                placeholder="Full name"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm text-gray-300 mb-1">Email</label>
-                                            <input
-                                                className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
-                                                value={formData.email}
-                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                placeholder="Email address"
-                                                type="email"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm text-gray-300 mb-1">Phone</label>
-                                            <input
-                                                className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
-                                                value={formData.phoneNumber}
-                                                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                                placeholder="Phone number"
-                                                type="tel"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm text-gray-300 mb-1">City</label>
-                                            <input
-                                                className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
-                                                value={formData.city}
-                                                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                                                placeholder="City"
-                                            />
-                                        </div>
-                                        <div className="sm:col-span-2">
-                                            <label className="block text-sm text-gray-300 mb-1">College</label>
-                                            <input
-                                                className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
-                                                value={formData.college}
-                                                onChange={(e) => setFormData({ ...formData, college: e.target.value })}
-                                                placeholder="College / Institution"
-                                            />
+                                <div className="space-y-6">
+                                    {/* ==== Leader Details ==== */}
+                                    <div>
+                                        <h4 className="text-md font-semibold text-purple-300 mb-3">Leader Details</h4>
+                                        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+                                            <div className="sm:col-span-2">
+                                                <label className="block text-sm text-gray-300 mb-1">Leader Name</label>
+                                                <input
+                                                    className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
+                                                    value={formData.name}
+                                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                    placeholder="Full name"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm text-gray-300 mb-1">Email</label>
+                                                <input
+                                                    className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
+                                                    value={formData.email}
+                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                    placeholder="Email address"
+                                                    type="email"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm text-gray-300 mb-1">Phone</label>
+                                                <input
+                                                    className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
+                                                    value={formData.phoneNumber}
+                                                    onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                                                    placeholder="Phone number"
+                                                    type="tel"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm text-gray-300 mb-1">City</label>
+                                                <input
+                                                    className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
+                                                    value={formData.city}
+                                                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                                    placeholder="City"
+                                                />
+                                            </div>
+                                            <div className="sm:col-span-2">
+                                                <label className="block text-sm text-gray-300 mb-1">College</label>
+                                                <input
+                                                    className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
+                                                    value={formData.college}
+                                                    onChange={(e) => setFormData({ ...formData, college: e.target.value })}
+                                                    placeholder="College / Institution"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
+                                    {/* ==== Members Section ==== */}
+                                    <div>
+                                        <h4 className="text-md font-semibold text-purple-300 mb-3">Team Members</h4>
+                                        {team.teamMembers.length > 0 ? (
+                                            <div className="space-y-4">
+                                                {team.teamMembers.map((member, idx) => (
+                                                    <div key={member._id || idx} className="p-3 bg-black/30 rounded border border-purple-800/40">
+                                                        <p className="text-sm text-purple-400 mb-2">Member {idx + 1}</p>
+                                                        <input
+                                                            className="w-full p-2 mb-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
+                                                            value={team.teamMembers[idx].name}
+                                                            onChange={(e) => {
+                                                                const updatedMembers = [...team.teamMembers];
+                                                                updatedMembers[idx] = { ...updatedMembers[idx], name: e.target.value };
+                                                                setTeam({ ...team, teamMembers: updatedMembers });
+                                                            }}
+                                                            placeholder="Full name"
+                                                        />
+                                                        <input
+                                                            className="w-full p-2 mb-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
+                                                            value={team.teamMembers[idx].email}
+                                                            onChange={(e) => {
+                                                                const updatedMembers = [...team.teamMembers];
+                                                                updatedMembers[idx] = { ...updatedMembers[idx], email: e.target.value };
+                                                                setTeam({ ...team, teamMembers: updatedMembers });
+                                                            }}
+                                                            placeholder="Email address"
+                                                        />
+                                                        <input
+                                                            className="w-full p-2 bg-black border border-purple-800 rounded text-white text-sm sm:text-base"
+                                                            value={team.teamMembers[idx].phoneNumber}
+                                                            onChange={(e) => {
+                                                                const updatedMembers = [...team.teamMembers];
+                                                                updatedMembers[idx] = { ...updatedMembers[idx], phoneNumber: e.target.value };
+                                                                setTeam({ ...team, teamMembers: updatedMembers });
+                                                            }}
+                                                            placeholder="Phone number"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-sm text-gray-500 italic">No team members added yet</p>
+                                        )}
+                                    </div>
+
+
+                                    {/* ==== Action Buttons ==== */}
                                     <div className="flex flex-col sm:flex-row gap-3">
                                         <Button
                                             onClick={handleSave}
@@ -375,18 +466,7 @@ export default function Dashboard() {
                                         </Button>
                                         <Button
                                             variant="outline"
-                                            onClick={() => {
-                                                if (team) {
-                                                    setFormData({
-                                                        name: team.teamLeader.name,
-                                                        email: team.teamLeader.email,
-                                                        phoneNumber: team.teamLeader.phoneNumber,
-                                                        city: team.teamLeader.city,
-                                                        college: team.teamLeader.college,
-                                                    });
-                                                }
-                                                setEditing(false);
-                                            }}
+                                            onClick={() => setEditing(false)}
                                             className="flex-1"
                                         >
                                             Cancel
@@ -406,14 +486,13 @@ export default function Dashboard() {
                                     {notices.map((n) => (
                                         <li
                                             key={n._id}
-                                            className="flex justify-between items-center bg-[#1b1b1f] p-3 sm:p-4 rounded-lg hover:bg-purple-950/40"
+                                            className="flex items-center justify-between gap-2"
                                         >
-                                            <span className="text-white text-sm sm:text-base pr-2">{n.title}</span>
+                                            <span className="text-white text-sm sm:text-base truncate">{n.title}</span>
                                             <a
                                                 href={n.fileUrl}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                download
                                                 aria-label={`Download ${n.title}`}
                                                 title="Download"
                                                 className="flex-shrink-0"
@@ -428,6 +507,7 @@ export default function Dashboard() {
                             )}
                         </Card>
                     </TabsContent>
+
 
                     {/* 🔔 Notifications */}
                     {/* <TabsContent value="notifications" className="mt-6">

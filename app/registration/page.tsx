@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from 'react'
+import { useRouter } from "next/navigation";
 import { LuUsers, LuUser, LuArrowRight, LuArrowLeft } from "react-icons/lu";
 
 interface TeamMember {
@@ -9,6 +10,7 @@ interface TeamMember {
 }
 
 const TeamRegistration: React.FC = () => {
+    const router = useRouter();
     // Form state
     const [step, setStep] = useState<number>(1);
     const [teamLeader, setTeamLeader] = useState({
@@ -89,18 +91,7 @@ const TeamRegistration: React.FC = () => {
 
                 if (res.ok) {
                     alert("✅ Registration successful! Check your email.");
-                    setStep(1); // reset if needed
-                    setTeamLeader({
-                        name: "",
-                        college: "",
-                        city: "",
-                        phoneNumber: "",
-                        email: "",
-                        password: "",          // 🔑 added
-                        confirmPassword: "",
-                        teamSize: 1,
-                    });
-                    setTeamMembers([]);
+                    router.push("/login");
                 } else {
                     alert("❌ Something went wrong.");
                 }
