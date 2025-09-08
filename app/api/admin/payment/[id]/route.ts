@@ -5,13 +5,13 @@ import sgMail from "@sendgrid/mail";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
-export async function PATCH(
+export async function PUT(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> } // ✅ Change this
 ) {
   await connect();
 
-  const { id } = await context.params; // <-- await the promise
+  const { id } = await context.params; // await the promise
   const { action } = await req.json();
 
   const team = await Team.findById(id);
@@ -23,6 +23,7 @@ export async function PATCH(
 
   team.payment.updatedAt = new Date();
   await team.save();
+
   if (action === "approve") {
     await sgMail.send({
       to: team.teamLeader.email,
