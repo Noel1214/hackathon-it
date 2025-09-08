@@ -8,6 +8,7 @@ interface TeamMember {
 }
 
 export interface TeamDocument extends Document {
+  teamId: string;
   teamLeader: {
     name: string;
     college: string;
@@ -39,6 +40,7 @@ const TeamLeaderSchema = new Schema({
 });
 const TeamSchema = new Schema(
   {
+    teamId: { type: String, unique: true, required: true },
     teamLeader: { type: TeamLeaderSchema, required: true },
     teamMembers: [TeamMemberSchema],
   },
