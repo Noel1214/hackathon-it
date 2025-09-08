@@ -36,7 +36,7 @@ export default function Home() {
             Hackathon 2025
           </h1>
           <p className="mt-4 text-gray-400 text-lg md:text-xl">
-            Code. Create. Conquer in the Dark.
+            Code. Create. Conquer.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-6">
@@ -67,7 +67,7 @@ export default function Home() {
               <span className="font-semibold"> St. Joseph&apos;s College</span>, are thrilled
               to announce our upcoming Hackathon.{" "}
               <span className="text-purple-400 font-semibold">Date: 16th September</span>{" "}
-              Get ready for a night of innovation, collaboration, and creativity where
+              Get ready for innovation, collaboration, and creativity where
               brilliant minds converge to push the boundaries of technology.
             </p>
           </div>
