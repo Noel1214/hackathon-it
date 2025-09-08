@@ -57,7 +57,7 @@ export default function AdminDashboard() {
         setActionLoading(teamId);
         try {
             const res = await fetch(`/api/admin/payment/${teamId}`, {
-                method: "PATCH",
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ action }),
             });
