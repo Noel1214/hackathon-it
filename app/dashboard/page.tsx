@@ -166,7 +166,7 @@ export default function Dashboard() {
     if (!team) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#0c0c0f] text-purple-400 p-4">
-                🦇 Loading your gothic dashboard...
+                Loading...
             </div>
         );
     }
@@ -244,10 +244,10 @@ export default function Dashboard() {
                 {/* 📑 Tabs */}
                 <Tabs value={tab} onValueChange={setTab} className="w-full">
                     <TabsList className="bg-[#121214] border border-gray-800 w-full flex overflow-x-auto">
-                        <TabsTrigger value="overview" className="flex-1 min-w-[100px] text-xs sm:text-sm">Overview</TabsTrigger>
-                        <TabsTrigger value="edit" className="flex-1 min-w-[100px] text-xs sm:text-sm">Edit</TabsTrigger>
-                        <TabsTrigger value="notices" className="flex-1 min-w-[100px] text-xs sm:text-sm">Notices</TabsTrigger>
-                        <TabsTrigger value="notifications" className="flex-1 min-w-[100px] text-xs sm:text-sm">Alerts</TabsTrigger>
+                        <TabsTrigger value="overview" className="flex-1 min-w-[100px] text-xs sm:text-sm text-white data-[state=active]:text-purple-400">Overview</TabsTrigger>
+                        <TabsTrigger value="edit" className="flex-1 min-w-[100px] text-xs sm:text-sm text-white data-[state=active]:text-purple-400">Edit</TabsTrigger>
+                        <TabsTrigger value="notices" className="flex-1 min-w-[100px] text-xs sm:text-sm text-white data-[state=active]:text-purple-400">Notices</TabsTrigger>
+                        {/* <TabsTrigger value="notifications" className="flex-1 min-w-[100px] text-xs sm:text-sm">Alerts</TabsTrigger> */}
                     </TabsList>
 
                     {/* 🟣 Overview */}
@@ -276,13 +276,14 @@ export default function Dashboard() {
                                     <h3 className="text-lg font-bold mb-4 text-purple-400">Team Members</h3>
                                     {team.teamMembers.length > 0 ? (
                                         <ul className="space-y-3">
-                                            {team.teamMembers.map((m, i) => (
-                                                <li key={i}>
+                                            {team.teamMembers.map((m) => (
+                                                <li key={m.email}>   {/* or m._id if available */}
                                                     <p className="font-semibold text-white">{m.name}</p>
                                                     <p className="text-xs sm:text-sm text-gray-400">{m.email}</p>
                                                 </li>
                                             ))}
                                         </ul>
+
                                     ) : (
                                         <p className="text-sm text-gray-500 italic">No team members added yet</p>
                                     )}
@@ -429,7 +430,7 @@ export default function Dashboard() {
                     </TabsContent>
 
                     {/* 🔔 Notifications */}
-                    <TabsContent value="notifications" className="mt-6">
+                    {/* <TabsContent value="notifications" className="mt-6">
                         <Card className="bg-[#121214] border-purple-800/40 p-4 sm:p-5">
                             <h3 className="text-lg font-bold text-purple-400 mb-4">🔔 Recent Notifications</h3>
                             <div className="space-y-3">
@@ -447,7 +448,7 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         </Card>
-                    </TabsContent>
+                    </TabsContent> */}
                 </Tabs>
             </main>
         </div>
