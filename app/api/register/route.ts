@@ -24,11 +24,26 @@ export async function POST(req: Request) {
     }
     console.log("📩 Incoming:", JSON.stringify(data, null, 2));
 
+    // 3. Generate Team ID
+    const lastTeam = await Team.findOne().sort({ createdAt: -1 });
+
+    let nextNumber = 101; // starting point
+    if (lastTeam?.teamId) {
+      const lastNumber = parseInt(lastTeam.teamId.replace("HIT", ""), 10);
+      if (!isNaN(lastNumber)) {
+        nextNumber = lastNumber + 1;
+      }
+    }
+
+    const newTeamId = `HIT${nextNumber}`; // ✅ This will give HIT101, HIT102...
+
     // 3. Save to MongoDB (hash via schema middleware)
+
     const newTeam = new Team({
+      teamId: newTeamId, // ✅ save custom teamId
       teamLeader: {
         ...leader,
-        password, // schema pre("save") will hash
+        password,
         teamSize: data.teamLeader.teamSize,
       },
       teamMembers: data.teamMembers || [],
@@ -41,21 +56,23 @@ export async function POST(req: Request) {
     const msg = {
       to: data.teamLeader.email,
       from: process.env.SENDGRID_FROM_EMAIL as string,
-      subject: `Hackathon Registration Confirmed – See You on 16.09.2025!`,
-      text: `Hi ${data.teamLeader.name},
+      subject: `✅ Hackathon Registration Confirmed – See You on 16.09.2025!`,
+      text: `Dear ${data.teamLeader.name},
 
-Your team of ${data.teamLeader.teamSize} has been successfully registered 🎉
+Congratulations! Your team of ${
+        data.teamLeader.teamSize
+      } has been successfully registered for the Hackathon 🎉
 
 📅 Date: 16th September 2025
-⏰ Time: Reach before 8:30 AM
-📍 Venue: Sail Hall, St. Joseph's College, Trichy
+⏰ Reporting Time: Before 8:45 AM
+📍 Venue: Sail Hall, St. Joseph’s College, Tiruchirappalli
 
-Please bring your College ID Card or show this email at entry.
+Kindly bring your College ID Card or show this confirmation email at the entry.
 
 👥 Team Details:
-- Leader: ${data.teamLeader.name}, ${data.teamLeader.college}, ${
-        data.teamLeader.city
-      }, ${data.teamLeader.phoneNumber}, ${data.teamLeader.email}
+- Leader: ${data.teamLeader.name}, ${data.teamLeader.phoneNumber}, ${
+        data.teamLeader.email
+      }
 ${data.teamMembers
   .map(
     (m: { name: string; email: string; phoneNumber: string }, i: number) =>
@@ -63,66 +80,77 @@ ${data.teamMembers
   )
   .join("\n")}
 
-To login, use the password you set during registration ✅
+🔑 Login Reminder: Use the password you set during registration.
 
-For corrections, contact us.
-More info: hackathon.jwstechnologies.com
+For any corrections or support, contact us directly.  
+More details: hackathon.jwstechnologies.com
 
-Best of luck,
-Team Organizers
+We look forward to your participation and wish you the very best! 🚀
 
----
-JWS Technologies (Tech Support)
-`,
+Warm regards,  
+Hackathon Organizing Team  
+JWS Technologies (Technical Support)`,
       html: `
-  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
+  <div style="font-family: Arial, sans-serif; max-width: 650px; margin: auto; padding: 24px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
+    <!-- Header -->
     <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
-      <h1 style="color: #111827; margin: 0;">🎉 Hackathon Registration Confirmed!</h1>
-      <p style="color: #6b7280; margin: 4px 0 0;">${data.teamLeader.college}</p>
+      <h1 style="color: #111827; margin: 0;">🎉 Registration Confirmed</h1>
+      <p style="color: #6b7280; margin: 6px 0 0; font-size: 14px;">
+        Hackathon 2025 • St. Joseph’s College, Tiruchirappalli
+      </p>
     </div>
 
-    <div style="padding: 20px; color: #111827;">
-      <p>Hi <strong>${data.teamLeader.name}</strong>,</p>
-      <p>Your team of <strong>${
+    <!-- Greeting -->
+    <div style="padding: 20px; color: #111827; font-size: 15px; line-height: 1.6;">
+      <p>Dear <strong>${data.teamLeader.name}</strong>,</p>
+      <p>We are excited to inform you that your team of <strong>${
         data.teamLeader.teamSize
-      }</strong> has been successfully registered 🚀</p>
+      }</strong> has been successfully registered for the upcoming Hackathon 🚀</p>
 
-      <div style="background: #111827; color: #ffffff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-        <h2 style="margin: 0 0 10px;">📅 Event Details</h2>
-        <p>📌 <strong>Date:</strong> 16th September 2025</p>
-        <p>⏰ <strong>Time:</strong> Reach before <strong>8:30 AM</strong></p>
-        <p>🏫 <strong>Venue:</strong> College Campus</p>
-        <p>🎟️ <strong>Entry:</strong> Show your <strong>College ID Card</strong> or this email</p>
+      <!-- Event Details -->
+      <div style="background: #111827; color: #ffffff; padding: 16px; border-radius: 8px; margin: 20px 0;">
+        <h2 style="margin: 0 0 12px; font-size: 18px;">📅 Event Details</h2>
+        <p><strong>Date:</strong> 16th September 2025</p>
+        <p><strong>Reporting Time:</strong> Before 8:45 AM</p>
+        <p><strong>Venue:</strong> Sail Hall, St. Joseph’s College</p>
+        <p><strong>Entry:</strong> College ID Card or this confirmation email</p>
       </div>
 
-      <h2>👥 Team Details</h2>
-      <ul style="list-style: none; padding: 0;">
-        <li><strong>Leader:</strong> ${data.teamLeader.name}, ${
+      <!-- Team Details -->
+      <h2 style="font-size: 18px; margin-top: 20px;">👥 Team Information</h2>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="margin-bottom: 8px;">
+          <strong>Leader:</strong> ${data.teamLeader.name}, ${
         data.teamLeader.college
       }, ${data.teamLeader.city}, ${data.teamLeader.phoneNumber}, ${
         data.teamLeader.email
-      }</li>
+      }
+        </li>
         ${data.teamMembers
           .map(
             (
               m: { name: string; email: string; phoneNumber: string },
               i: number
             ) =>
-              `<li><strong>Member ${i + 1}:</strong> ${m.name}, ${m.email}, ${
-                m.phoneNumber
-              }</li>`
+              `<li style="margin-bottom: 6px;"><strong>Member ${
+                i + 1
+              }:</strong> ${m.name}, ${m.email}, ${m.phoneNumber}</li>`
           )
           .join("")}
       </ul>
 
-      <p style="margin-top: 20px;">🔑 To login, use the password you set during registration.</p>
-      <p>For corrections, please <a href="tel:+916385266784" style="color: #2563eb;">contact us</a>.</p>
-      <p>More info: <a href="https://hackathon.jwstechnologies.com" style="color: #2563eb;">hackathon.jwstechnologies.com</a></p>
+      <!-- Instructions -->
+      <p style="margin-top: 20px;">🔑 <strong>Login Reminder:</strong> Use the password you created during registration.</p>
+      <p>For any corrections or support, please <a href="tel:+916385266784" style="color: #2563eb; text-decoration: none;">contact us</a>.</p>
+      <p>For more information, visit <a href="https://hackathon.jwstechnologies.com" style="color: #2563eb; text-decoration: none;">hackathon.jwstechnologies.com</a>.</p>
+
+      <p style="margin-top: 20px;">We are excited to see you showcase your skills and creativity. Best wishes to your team!</p>
     </div>
 
+    <!-- Footer -->
     <div style="text-align: center; padding: 15px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
       © 2025 Hackathon Team | All Rights Reserved <br/>
-      <strong>JWS Technologies (Tech Support)</strong>
+      <strong>JWS Technologies – Technical Support</strong>
     </div>
   </div>
   `,
@@ -134,7 +162,7 @@ JWS Technologies (Tech Support)
     return NextResponse.json(
       {
         message: "✅ Registration successful!",
-        teamId: newTeam._id,
+        teamId: newTeam.teamId,
       },
       { status: 200 }
     );
