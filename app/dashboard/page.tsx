@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-    Bell,
+    // Bell,
     LogOut,
     Shield,
     User,
@@ -14,8 +14,8 @@ import {
     MapPin,
     Calendar,
     FileDown,
-    Menu,
-    X,
+    // Menu,
+    // X,
 } from "lucide-react";
 
 interface TeamMember {
@@ -56,7 +56,7 @@ export default function Dashboard() {
     const [editing, setEditing] = useState(false);
     const [saving, setSaving] = useState(false);
     const [authError, setAuthError] = useState<string | null>(null);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [formData, setFormData] = useState<{
         name: string;
         email: string;
