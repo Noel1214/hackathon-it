@@ -1,10 +1,10 @@
 // import Image from "next/image";
-import { LuCalendar, LuUsers, LuTrophy } from "react-icons/lu";
+import { LuCalendar, LuUsers } from "react-icons/lu";
 import { FaRegClock } from "react-icons/fa6";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { IoMailOutline } from "react-icons/io5";
 import { BsTelephone } from "react-icons/bs";
-import { FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa";
+// import { FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
 
 export default function Home() {
@@ -63,10 +63,15 @@ export default function Home() {
           <div className="max-w-3xl mx-auto bg-[#111] text-center p-8 rounded-2xl border border-purple-900/40 shadow-lg">
             <p className="text-lg md:text-xl text-gray-200 leading-relaxed">
               We, the{" "}
-              <span className="font-semibold">Department of Information Technology</span> at
-              <span className="font-semibold"> St. Joseph&apos;s College</span>, are thrilled
-              to announce our upcoming Hackathon.{" "}
-              <span className="text-purple-400 font-semibold">Date: 16th September</span>{" "}
+              <span className="font-semibold">
+                Department of Information Technology
+              </span>{" "}
+              at
+              <span className="font-semibold"> St. Joseph&apos;s College</span>,
+              are thrilled to announce our upcoming Hackathon.{" "}
+              <span className="text-purple-400 font-semibold">
+                Date: 16th September
+              </span>{" "}
               Get ready for innovation, collaboration, and creativity where
               brilliant minds converge to push the boundaries of technology.
             </p>
@@ -83,27 +88,42 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl w-full p-6">
             {[
               {
-                icon: <LuCalendar size={40} className="mx-auto mb-4 text-purple-400" />,
+                icon: (
+                  <LuCalendar
+                    size={40}
+                    className="mx-auto mb-4 text-purple-400"
+                  />
+                ),
                 title: "Date",
                 main: "16th September",
                 sub: "Stay tuned for updates",
               },
               {
-                icon: <FaRegClock size={40} className="mx-auto mb-4 text-purple-400" />,
+                icon: (
+                  <FaRegClock
+                    size={40}
+                    className="mx-auto mb-4 text-purple-400"
+                  />
+                ),
                 title: "Duration",
                 main: "6 Hours",
                 sub: "Non-stop coding",
               },
               {
                 icon: (
-                  <MdOutlineLocationOn size={40} className="mx-auto mb-4 text-purple-400" />
+                  <MdOutlineLocationOn
+                    size={40}
+                    className="mx-auto mb-4 text-purple-400"
+                  />
                 ),
                 title: "Venue",
                 main: "College Campus",
                 sub: "St. Joseph's College",
               },
               {
-                icon: <LuUsers size={40} className="mx-auto mb-4 text-purple-400" />,
+                icon: (
+                  <LuUsers size={40} className="mx-auto mb-4 text-purple-400" />
+                ),
                 title: "Team Size",
                 main: "1-4 Members",
                 sub: "Collaborate & create",
@@ -117,7 +137,9 @@ export default function Home() {
                 <h3 className="playfair-display text-lg font-semibold text-gray-200 mb-2">
                   {item.title}
                 </h3>
-                <p className="text-2xl font-bold text-purple-400">{item.main}</p>
+                <p className="text-2xl font-bold text-purple-400">
+                  {item.main}
+                </p>
                 <p className="text-sm text-gray-400 mt-1">{item.sub}</p>
               </div>
             ))}
@@ -183,11 +205,17 @@ export default function Home() {
             <h3 className="playfair-display text-purple-400 font-semibold text-lg mb-4">
               Contact Information
             </h3>
-            <a className="font-semibold flex items-center justify-center sm:justify-start gap-2 mb-2" href="mailto:hackathon@jwstechnologies.com">
+            <a
+              className="font-semibold flex items-center justify-center sm:justify-start gap-2 mb-2"
+              href="mailto:hackathon@jwstechnologies.com"
+            >
               <IoMailOutline size={18} className="text-purple-400" />
               hackathon@jwstechnologies.com
             </a>
-            <a className="font-semibold flex items-center justify-center sm:justify-start gap-2" href="tel:+916385266784">
+            <a
+              className="font-semibold flex items-center justify-center sm:justify-start gap-2"
+              href="tel:+916385266784"
+            >
               <BsTelephone size={18} className="text-purple-400" />
               +91 63852 66784
             </a>
@@ -215,10 +243,13 @@ export default function Home() {
         </div>
 
         <div className="border-t border-gray-700 mt-10 pt-6 text-center text-sm text-gray-400">
-          © 2025 Department of Information Technology, St. Joseph&apos;s College. All rights reserved.
-          <br /><a href="https://jwstechnologies.com" target="_blank">JWS Technologies - Tech Support</a>
+          © 2025 Department of Information Technology, St. Joseph&apos;s
+          College. All rights reserved.
+          <br />
+          <a href="https://jwstechnologies.com" target="_blank">
+            JWS Technologies - Tech Support
+          </a>
         </div>
-
       </footer>
     </div>
   );
