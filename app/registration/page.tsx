@@ -10,6 +10,8 @@ interface TeamMember {
     phoneNumber: string;
 }
 
+
+
 const TeamRegistration: React.FC = () => {
     const router = useRouter();
     // Form state
@@ -26,6 +28,8 @@ const TeamRegistration: React.FC = () => {
     });
 
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+    const registrationFeePerPerson = 200; // ₹200 per person
+    // const totalAmount = (teamLeader.teamSize) * registrationFeePerPerson;
 
     // Handle team leader form input changes
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -68,6 +72,7 @@ const TeamRegistration: React.FC = () => {
             setStep(2);
         } else {
             // Final submission
+            const finalTeamSize = teamMembers.length + 1;
             const payload = {
                 teamLeader: {
                     name: teamLeader.name,
@@ -79,7 +84,13 @@ const TeamRegistration: React.FC = () => {
                     confirmPassword: teamLeader.confirmPassword,
                     teamSize: teamMembers.length + 1,
                 },
-                teamMembers
+                teamMembers,
+                payment: {
+                    amount: finalTeamSize * registrationFeePerPerson,
+                    status: "pending",
+                    updatedAt: new Date()
+                }
+
             };
 
             try {
@@ -92,7 +103,7 @@ const TeamRegistration: React.FC = () => {
                 });
 
                 if (res.ok) {
-                    alert("✅ Registration successful! Check your email.");
+                    alert("✅ Registration successful! Check your email, if not recieved check in SPAM.");
                     router.push("/login");
                 } else {
                     alert("❌ Something went wrong.");
