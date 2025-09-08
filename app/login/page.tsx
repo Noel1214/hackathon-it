@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LuLogIn } from "react-icons/lu";
-
+import { LuEye, LuEyeOff } from "react-icons/lu";
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -39,6 +39,9 @@ export default function LoginPage() {
             setLoading(false);
         }
     };
+
+
+    const [showPassword, setShowPassword] = useState(false);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#0d0d0d] p-6">
@@ -76,18 +79,26 @@ export default function LoginPage() {
                         />
                     </div>
 
-                    <div>
+
+                    <div className="relative">
                         <label className="block text-sm font-medium text-white mb-1">
                             Password *
                         </label>
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter your password"
                             className="w-full rounded-lg bg-black border border-gray-700 text-white px-4 py-2 focus:outline-none focus:border-purple-500"
                             required
                         />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-11 right-3 flex items-center text-gray-400 hover:text-white"
+                        >
+                            {showPassword ? <LuEyeOff size={20} /> : <LuEye size={20} />}
+                        </button>
                     </div>
 
                     <button
