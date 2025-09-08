@@ -97,7 +97,18 @@ export default function LoginPage() {
                     >
                         {loading ? "Logging in..." : "Login"}
                     </button>
+                    <p className="text-sm text-gray-400 text-center mt-4">
+                        Not registered yet?{" "}
+                        <a
+                            href="/registration"
+                            className="text-purple-400 hover:text-purple-500 font-medium transition-colors"
+                        >
+                            Click here
+                        </a>
+                    </p>
+
                 </form>
+
             </div>
         </div>
     );
