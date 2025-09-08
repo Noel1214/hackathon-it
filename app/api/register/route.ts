@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import sgMail from "@sendgrid/mail";
 import { connect } from "@/dbconfig/db";
 import Team from "@/models/team.model";
+import QRCode from "qrcode"; // ✅ import QRCode
 
 // Set SendGrid API key
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
@@ -22,148 +23,137 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    console.log("📩 Incoming:", JSON.stringify(data, null, 2));
 
     // 3. Generate Team ID
     const lastTeam = await Team.findOne().sort({ createdAt: -1 });
-
-    let nextNumber = 101; // starting point
+    let nextNumber = 101;
     if (lastTeam?.teamId) {
       const lastNumber = parseInt(lastTeam.teamId.replace("HIT", ""), 10);
-      if (!isNaN(lastNumber)) {
-        nextNumber = lastNumber + 1;
-      }
+      if (!isNaN(lastNumber)) nextNumber = lastNumber + 1;
     }
+    const newTeamId = `HIT${nextNumber}`;
 
-    const newTeamId = `HIT${nextNumber}`; // ✅ This will give HIT101, HIT102...
-
-    // 3. Save to MongoDB (hash via schema middleware)
-
+    // 4. Save to MongoDB
+    const finalTeamSize = data.teamMembers.length + 1;
     const newTeam = new Team({
-      teamId: newTeamId, // ✅ save custom teamId
+      teamId: newTeamId,
       teamLeader: {
         ...leader,
         password,
-        teamSize: data.teamLeader.teamSize,
+        teamSize: finalTeamSize,
       },
       teamMembers: data.teamMembers || [],
     });
 
-    await newTeam.save();
-    console.log("✅ Team saved to DB:", newTeam._id);
+    newTeam.set("payment", {
+      amount: finalTeamSize * 200,
+      status: "pending",
+      updatedAt: new Date(),
+    });
 
-    // 4. Prepare confirmation email
+    await newTeam.save();
+
+    // 6. Prepare email
+    const paymentAmount = finalTeamSize * 200;
+    const upiId = "rakeshjoe52-1@oksbi";
+
     const msg = {
       to: data.teamLeader.email,
       from: process.env.SENDGRID_FROM_EMAIL as string,
-      subject: `✅ Hackathon Registration Confirmed – See You on 16.09.2025!`,
-      text: `Dear ${data.teamLeader.name},
+      subject: "✅ Hackathon 2025 Registration Confirmed – Payment Pending",
+      text: `Hi ${data.teamLeader.name},
 
-Congratulations! Your team of ${
-        data.teamLeader.teamSize
-      } has been successfully registered for the Hackathon 🎉
+Your team of ${finalTeamSize} has been successfully registered for Hackathon 2025.
 
-📅 Date: 16th September 2025
-⏰ Reporting Time: Before 8:45 AM
-📍 Venue: Sail Hall, St. Joseph’s College, Tiruchirappalli
+💳 Payment Pending: ₹${paymentAmount}
 
-Kindly bring your College ID Card or show this confirmation email at the entry.
+Please complete the payment using any UPI app:
 
-👥 Team Details:
-- Leader: ${data.teamLeader.name}, ${data.teamLeader.phoneNumber}, ${
-        data.teamLeader.email
-      }
+UPI ID: ${upiId}
+Amount: ₹${paymentAmount}
+Transaction Reference / Note: ${newTeamId}
+
+Once payment is complete, your registration will be confirmed.
+
+Team Details:
+Leader: ${data.teamLeader.name}, ${data.teamLeader.college}, ${
+        data.teamLeader.city
+      }, ${data.teamLeader.phoneNumber}, ${data.teamLeader.email}
+Members:
 ${data.teamMembers
-  .map(
-    (m: { name: string; email: string; phoneNumber: string }, i: number) =>
-      `- Member ${i + 1}: ${m.name}, ${m.email}, ${m.phoneNumber}`
-  )
+  .map((m, i) => `Member ${i + 1}: ${m.name}, ${m.email}, ${m.phoneNumber}`)
   .join("\n")}
 
-🔑 Login Reminder: Use the password you set during registration.
+Event Date: 16th September 2025
+Reporting Time: Before 8:45 AM
+Venue: Sail Hall, St. Joseph’s College
 
-For any corrections or support, contact us directly.  
-More details: hackathon.jwstechnologies.com
-
-We look forward to your participation and wish you the very best! 🚀
-
-Warm regards,  
-Hackathon Organizing Team  
-JWS Technologies (Technical Support)`,
+For support, contact: +91 6385266784
+Website: https://jwstechnologies.com
+`,
       html: `
-  <div style="font-family: Arial, sans-serif; max-width: 650px; margin: auto; padding: 24px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
-    <!-- Header -->
-    <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
-      <h1 style="color: #111827; margin: 0;">🎉 Registration Confirmed</h1>
-      <p style="color: #6b7280; margin: 6px 0 0; font-size: 14px;">
-        Hackathon 2025 • St. Joseph’s College, Tiruchirappalli
-      </p>
-    </div>
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 650px; margin: auto; padding: 24px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px;">
+  <div style="text-align: center; border-bottom: 1px solid #e0e0e0; padding-bottom: 20px; margin-bottom: 20px;">
+    <h1 style="color: #111827; margin: 0;">🎉 Registration Confirmed!</h1>
+    <p style="color: #6b7280; margin: 6px 0 0; font-size: 14px;">Hackathon 2025 • St. Joseph’s College</p>
+  </div>
 
-    <!-- Greeting -->
-    <div style="padding: 20px; color: #111827; font-size: 15px; line-height: 1.6;">
-      <p>Dear <strong>${data.teamLeader.name}</strong>,</p>
-      <p>We are excited to inform you that your team of <strong>${
-        data.teamLeader.teamSize
-      }</strong> has been successfully registered for the upcoming Hackathon 🚀</p>
+  <div style="color: #111827; font-size: 15px; line-height: 1.6;">
+    <p>Hi <strong>${data.teamLeader.name}</strong>,</p>
+    <p>Your team of <strong>${finalTeamSize}</strong> has been successfully registered for Hackathon 2025 🚀</p>
 
-      <!-- Event Details -->
-      <div style="background: #111827; color: #ffffff; padding: 16px; border-radius: 8px; margin: 20px 0;">
-        <h2 style="margin: 0 0 12px; font-size: 18px;">📅 Event Details</h2>
-        <p><strong>Date:</strong> 16th September 2025</p>
-        <p><strong>Reporting Time:</strong> Before 8:45 AM</p>
-        <p><strong>Venue:</strong> Sail Hall, St. Joseph’s College</p>
-        <p><strong>Entry:</strong> College ID Card or this confirmation email</p>
-      </div>
+    <p style="background-color: #fffbeb; color: #b45309; padding: 10px 15px; border-radius: 8px; font-weight: bold;">
+      💳 Payment Pending: ₹${paymentAmount}
+    </p>
 
-      <!-- Team Details -->
-      <h2 style="font-size: 18px; margin-top: 20px;">👥 Team Information</h2>
-      <ul style="list-style: none; padding: 0; margin: 0;">
-        <li style="margin-bottom: 8px;">
-          <strong>Leader:</strong> ${data.teamLeader.name}, ${
+    <p>Please complete the payment using any UPI app:</p>
+    <ul>
+      <li><strong>UPI ID:</strong> ${upiId}</li>
+      <li><strong>Amount:</strong> ₹${paymentAmount}</li>
+      <li><strong>Transaction Reference / Note:</strong> ${newTeamId}</li>
+    </ul>
+
+    <h3>👥 Team Details</h3>
+    <ul>
+      <li><strong>Leader:</strong> ${data.teamLeader.name}, ${
         data.teamLeader.college
       }, ${data.teamLeader.city}, ${data.teamLeader.phoneNumber}, ${
         data.teamLeader.email
-      }
-        </li>
-        ${data.teamMembers
-          .map(
-            (
-              m: { name: string; email: string; phoneNumber: string },
-              i: number
-            ) =>
-              `<li style="margin-bottom: 6px;"><strong>Member ${
-                i + 1
-              }:</strong> ${m.name}, ${m.email}, ${m.phoneNumber}</li>`
-          )
-          .join("")}
-      </ul>
+      }</li>
+      ${data.teamMembers
+        .map(
+          (m, i) =>
+            `<li><strong>Member ${i + 1}:</strong> ${m.name}, ${m.email}, ${
+              m.phoneNumber
+            }</li>`
+        )
+        .join("")}
+    </ul>
 
-      <!-- Instructions -->
-      <p style="margin-top: 20px;">🔑 <strong>Login Reminder:</strong> Use the password you created during registration.</p>
-      <p>For any corrections or support, please <a href="tel:+916385266784" style="color: #2563eb; text-decoration: none;">contact us</a>.</p>
-      <p>For more information, visit <a href="https://hackathon.jwstechnologies.com" style="color: #2563eb; text-decoration: none;">hackathon.jwstechnologies.com</a>.</p>
+    <p>📅 Event Date: 16th September 2025<br/>
+    ⏰ Reporting Time: Before 8:45 AM<br/>
+    📍 Venue: Sail Hall, St. Joseph’s College</p>
 
-      <p style="margin-top: 20px;">We are excited to see you showcase your skills and creativity. Best wishes to your team!</p>
-    </div>
+    <p style="text-align:center; margin: 25px 0;">
+      <a href="https://hackathon.jwstechnologies.com/login" target="_blank" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+        Login to Dashboard
+      </a>
+    </p>
 
-    <!-- Footer -->
-    <div style="text-align: center; padding: 15px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
-      © 2025 Hackathon Team | All Rights Reserved <br/>
-      <strong>JWS Technologies – Technical Support</strong>
-    </div>
+    <p>For support, call: <a href="tel:+916385266784" style="color: #2563eb; text-decoration: none;">+91 6385266784</a></p>
   </div>
-  `,
+
+  <div style="text-align: center; padding: 15px; border-top: 1px solid #e0e0e0; color: #6b7280; font-size: 12px; margin-top: 20px;">
+    © 2025 Hackathon Team | <a href="https://jwstechnologies.com" target="_blank" style="color: #2563eb; text-decoration: none;">JWS Technologies – Technical Support</a>
+  </div>
+</div>
+`,
     };
 
-    // ✅ Send email
     await sgMail.send(msg);
 
     return NextResponse.json(
-      {
-        message: "✅ Registration successful!",
-        teamId: newTeam.teamId,
-      },
+      { message: "✅ Registration successful!", teamId: newTeam.teamId },
       { status: 200 }
     );
   } catch (err: unknown) {

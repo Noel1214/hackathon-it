@@ -37,6 +37,10 @@ interface TeamData {
         teamSize: number;
     };
     teamMembers: TeamMember[];
+    payment: {
+        amount: string,
+        status: string,
+    }
 }
 
 interface Notice {
@@ -303,7 +307,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* 💳 Payment Card */}
-                        <Card className="bg-[#121214] border-purple-800/40 p-4 sm:p-6 mt-6">
+                        <Card className="bg-[#121214] border-purple-800/40 p-4 sm:p-6">
                             <CardContent className="flex flex-col sm:flex-row justify-between items-center gap-4">
                                 <div>
                                     <h3 className="text-lg font-bold text-purple-400 mb-2">💰 Team Payment</h3>
@@ -316,13 +320,33 @@ export default function Dashboard() {
                                     <p className="text-sm text-gray-300 mb-2">
                                         Total amount: <span className="font-semibold text-white">₹{(team.teamMembers.length + 1) * 200}</span>
                                     </p>
+                                    <p className="text-sm text-gray-300">
+                                        Status:{" "}
+                                        {team.payment?.status === "pending" && <span className="text-yellow-400 font-semibold">Pending</span>}
+                                        {team.payment?.status === "approved" && <span className="text-green-400 font-semibold">Payment Successful ✅</span>}
+                                        {team.payment?.status === "rejected" && <span className="text-red-400 font-semibold">Payment Failed ❌</span>}
+                                    </p>
                                 </div>
-                                <a
-                                    href={`upi://pay?pa=rakeshjoe52-1@oksbi&pn=Rakesh%20Joe&am=${(team.teamMembers.length + 1) * 200}&cu=INR&tn=${team.teamId}`}
-                                    className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded text-sm sm:text-base"
-                                >
-                                    Pay via GPay
-                                </a>
+
+                                {/* Show GPay button only if payment pending */}
+                                {team.payment?.status === "pending" && (
+                                    <a
+                                        href={`upi://pay?pa=rakeshjoe52-1@oksbi&pn=Rakesh%20Joe&am=${(team.teamMembers.length + 1) * 200}&cu=INR&tn=${team.teamId}`}
+                                        className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded text-sm sm:text-base"
+                                    >
+                                        Pay via GPay
+                                    </a>
+                                )}
+
+                                {/* Retry button if rejected */}
+                                {team.payment?.status === "rejected" && (
+                                    <Button
+                                        onClick={() => window.location.reload()}
+                                        className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded text-sm sm:text-base"
+                                    >
+                                        Retry Payment
+                                    </Button>
+                                )}
                             </CardContent>
                         </Card>
                         {/* Event Info */}

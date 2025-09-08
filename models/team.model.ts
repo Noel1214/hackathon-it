@@ -7,6 +7,11 @@ interface TeamMember {
   phoneNumber: string;
 }
 
+interface Payment {
+  amount: number;
+  status: "pending" | "approved" | "rejected";
+  updatedAt: Date;
+}
 export interface TeamDocument extends Document {
   teamId: string;
   teamLeader: {
@@ -19,6 +24,11 @@ export interface TeamDocument extends Document {
     teamSize: number;
   };
   teamMembers: TeamMember[];
+  payment: {
+    amount: number;
+    status: "pending" | "approved" | "rejected";
+    updatedAt: Date;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,14 +48,27 @@ const TeamLeaderSchema = new Schema({
   password: { type: String, required: true, select: false },
   teamSize: { type: Number, required: true, min: 1, max: 4 },
 });
+
+const PaymentSchema = new Schema<Payment>({
+  amount: { type: Number, required: true, default: 0 },
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+    required: true,
+  },
+  updatedAt: { type: Date, required: true, default: Date.now },
+});
 const TeamSchema = new Schema(
   {
     teamId: { type: String, unique: true, required: true },
     teamLeader: { type: TeamLeaderSchema, required: true },
     teamMembers: [TeamMemberSchema],
+    payment: { type: PaymentSchema, required: true }, // remove default
   },
   { timestamps: true }
 );
+
 // 🔑 Middleware to hash only leader password
 TeamSchema.pre("save", async function (next) {
   const team = this as TeamDocument;
