@@ -7,12 +7,14 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   await connect();
+
+  const { id } = await context.params; // <-- await the promise
   const { action } = await req.json();
 
-  const team = await Team.findById(params.id);
+  const team = await Team.findById(id);
   if (!team)
     return NextResponse.json({ error: "Team not found" }, { status: 404 });
 
@@ -21,7 +23,6 @@ export async function PATCH(
 
   team.payment.updatedAt = new Date();
   await team.save();
-
   if (action === "approve") {
     await sgMail.send({
       to: team.teamLeader.email,
