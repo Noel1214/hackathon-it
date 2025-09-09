@@ -113,6 +113,8 @@ Event Date: 16th September 2025
 Reporting Time: Before 8:45 AM
 Venue: Sail Hall, St. Joseph's College
 
+⚠️ Important: Students must bring their laptop.
+
 For support, contact: +91 6385266784
 Website: https://jwstechnologies.com
 `,
@@ -162,6 +164,10 @@ Website: https://jwstechnologies.com
     ⏰ Reporting Time: Before 8:45 AM<br/>
     📍 Venue: Sail Hall, St. Joseph's College</p>
 
+    <p style="background-color:#fef2f2; color:#991b1b; padding:10px 15px; border-radius:8px; font-weight:bold;">
+      ⚠️ Important: Students must bring their laptop.
+    </p>
+
     <p style="text-align:center; margin: 25px 0;">
       <a href="https://hackathon.jwstechnologies.com/login" target="_blank" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
         Login to Dashboard
@@ -171,7 +177,7 @@ Website: https://jwstechnologies.com
     <p>For support, call: <a href="tel:+916385266784" style="color: #2563eb; text-decoration: none;">+91 6385266784</a></p>
   </div>
 
-  <div style="text-align: center; padding: 15px; border-top: 1px solid #e0e0e0; color: #6b7280; font-size: 12px; margin-top: 20px;">
+  <div style="text-align: center; padding: 15px; border-top: 1px solid #e0e0e0; color: #6b7280; font-size: 15px; margin-top: 20px;">
     © 2025 Hackathon Team | <a href="https://jwstechnologies.com" target="_blank" style="color: #2563eb; text-decoration: none;">JWS Technologies – Technical Support</a>
   </div>
 </div>

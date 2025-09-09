@@ -10,13 +10,13 @@ import Link from "next/link";
 export default function Home() {
   const rules = [
     "Teams must consist of 1-3 members",
+    "Students must bring their laptop",
     "All code must be original and created during the event",
     "Use of external APIs and libraries is allowed",
     "Projects must be submitted before the deadline",
     "Teams must present their solutions to judges",
     "Respect fellow participants and maintain fair play",
     "No pre-built solutions or existing projects",
-    "Follow the college's code of conduct at all times",
   ];
 
   return (
