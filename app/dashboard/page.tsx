@@ -13,7 +13,9 @@ import {
     Phone,
     MapPin,
     Calendar,
+    Clock,
     FileDown,
+    Building
     // Menu,
     // X,
 } from "lucide-react";
@@ -152,8 +154,8 @@ export default function Dashboard() {
     const eventInfo = useMemo(
         () => [
             { icon: <Calendar className="mx-auto mb-2" />, title: "September 16", subtitle: "Event Date" },
-            { icon: null, title: "6 Hours", subtitle: "Duration" },
-            { icon: null, title: "SJC Campus", subtitle: "Venue" },
+            { icon: <Clock className="mx-auto mb-2" />, title: "6 Hours", subtitle: "Duration" },
+            { icon: <Building className="mx-auto mb-2" />, title: "Sail Hall, St. Joseph's College", subtitle: "Venue" },
         ],
         []
     );
@@ -250,9 +252,7 @@ export default function Dashboard() {
                         <span className="bg-purple-700/80 px-3 py-1 rounded-full text-xs sm:text-sm text-white">
                             Confirmed
                         </span>
-                        <a href="upi://pay?pa=rakeshjoe52-1@oksbi&pn=Rakesh%20Joe&am=500&cu=INR&tn=HIT101">
-                            Pay ₹500 via GPay
-                        </a>
+
 
 
                     </CardContent>
@@ -351,16 +351,23 @@ export default function Dashboard() {
                         </Card>
                         {/* Event Info */}
                         <Card className="bg-[#121214] border-purple-800/40">
-                            <CardContent className="p-4 sm:p-6 grid grid-cols-1 xs:grid-cols-3 gap-4 sm:gap-6 text-center">
+                            <CardContent className="p-4 sm:p-6 flex flex-col md:flex-row gap-4 sm:gap-6 text-center">
                                 {eventInfo.map((item, idx) => (
-                                    <div key={idx} className="p-2">
-                                        {item.icon ? <div className="text-purple-400 mx-auto mb-2 flex justify-center">{item.icon}</div> : null}
-                                        <p className="text-purple-400 font-bold text-sm sm:text-base">{item.title}</p>
+                                    <div key={idx} className="p-2 flex-1">
+                                        {item.icon ? (
+                                            <div className="text-purple-400 mx-auto mb-2 flex justify-center">
+                                                {item.icon}
+                                            </div>
+                                        ) : null}
+                                        <p className="text-purple-400 font-bold text-sm sm:text-base">
+                                            {item.title}
+                                        </p>
                                         <p className="text-xs sm:text-sm text-gray-400">{item.subtitle}</p>
                                     </div>
                                 ))}
                             </CardContent>
                         </Card>
+
                     </TabsContent>
 
                     {/* 📝 Edit */}

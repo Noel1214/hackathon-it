@@ -61,7 +61,7 @@ export async function POST(req: Request) {
       teamId: newTeamId,
       teamLeader: {
         ...leader,
-        password: await bcrypt.hash(password, 10), // Hash the password
+        password: password, // Hash the password
         teamSize: finalTeamSize,
       },
       teamMembers: data.teamMembers || [],

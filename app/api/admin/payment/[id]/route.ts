@@ -2,6 +2,8 @@ import { NextResponse, NextRequest } from "next/server";
 import { connect } from "@/dbconfig/db";
 import Team from "@/models/team.model";
 import sgMail from "@sendgrid/mail";
+import path from "path";
+import fs from "fs";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
@@ -25,6 +27,14 @@ export async function PUT(
   await team.save();
 
   if (action === "approve") {
+    // 📂 Resolve PDF file paths inside public/docs
+    const rulesPath = path.join(process.cwd(), "public/docs/rules.pdf");
+    const schedulePath = path.join(process.cwd(), "public/docs/schedule.pdf");
+
+    // 🔄 Convert to base64
+    const rulesFile = fs.readFileSync(rulesPath).toString("base64");
+    const scheduleFile = fs.readFileSync(schedulePath).toString("base64");
+
     await sgMail.send({
       to: team.teamLeader.email,
       from: process.env.SENDGRID_FROM_EMAIL as string,
@@ -84,6 +94,20 @@ export async function PUT(
         </div>
       </div>
       `,
+      attachments: [
+        {
+          content: rulesFile,
+          filename: "rules.pdf",
+          type: "application/pdf",
+          disposition: "attachment",
+        },
+        {
+          content: scheduleFile,
+          filename: "schedule.pdf",
+          type: "application/pdf",
+          disposition: "attachment",
+        },
+      ],
     });
   }
 
