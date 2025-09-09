@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import { useRouter } from "next/navigation";
-import { LuUsers, LuUser, LuArrowRight, LuArrowLeft } from "react-icons/lu";
+import { LuUsers, LuUser, LuArrowRight, LuArrowLeft, LuLoader } from "react-icons/lu";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 
 interface TeamMember {
@@ -26,6 +26,7 @@ const TeamRegistration: React.FC = () => {
         confirmPassword: "",
         teamSize: 1,
     });
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
     const registrationFeePerPerson = 200; // ₹200 per person
@@ -71,6 +72,7 @@ const TeamRegistration: React.FC = () => {
             setTeamMembers(members);
             setStep(2);
         } else {
+            setLoading(true);
             // Final submission
             const finalTeamSize = teamMembers.length + 1;
             const payload = {
@@ -363,6 +365,7 @@ const TeamRegistration: React.FC = () => {
                                 type="button"
                                 onClick={handleBack}
                                 className="flex items-center justify-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition"
+                                disabled={loading}
                             >
                                 <LuArrowLeft className="mr-2" />
                                 Back
@@ -371,10 +374,21 @@ const TeamRegistration: React.FC = () => {
 
                         <button
                             type="submit"
-                            className="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+                            disabled={loading}
+                            className={`flex items-center justify-center px-4 py-2 rounded-lg transition 
+                        ${loading ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"} text-white`}
                         >
-                            {step === 1 ? 'Next' : 'Complete Registration'}
-                            <LuArrowRight className="ml-2" />
+                            {loading ? (
+                                <>
+                                    <LuLoader className="animate-spin mr-2" />
+                                    Processing...
+                                </>
+                            ) : (
+                                <>
+                                    {step === 1 ? 'Next' : 'Complete Registration'}
+                                    <LuArrowRight className="ml-2" />
+                                </>
+                            )}
                         </button>
                     </div>
                 </form>
