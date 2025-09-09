@@ -39,7 +39,7 @@ export async function PUT(
       to: team.teamLeader.email,
       from: process.env.SENDGRID_FROM_EMAIL as string,
       subject: "✅ Payment Approved – Hackathon 2025 Registration Confirmed",
-      text: `Hi ${team.teamLeader.name},\n\nYour payment of ₹${team.payment.amount} has been approved. Your team registration for Hackathon 2025 is confirmed!\n\nTeam ID: ${team.teamId}\n\nFor support, visit https://jwstechnologies.com`,
+      text: `Hi ${team.teamLeader.name},\n\nYour payment of ₹${team.payment.amount} has been approved. Your team registration for Hackathon 2025 is confirmed!\n\nTeam ID: ${team.teamId}\n\nFor support,⚠️ Important: Students must bring their laptop. visit https://jwstechnologies.com`,
       html: `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 650px; margin: auto; padding: 24px; background-color: #ffffff; border-radius: 12px; border: 1px solid #e0e0e0;">
         <div style="text-align: center; border-bottom: 1px solid #e0e0e0; padding-bottom: 20px; margin-bottom: 20px;">
@@ -78,6 +78,10 @@ export async function PUT(
           <p>📅 Event Date: 16th September 2025<br/>
           ⏰ Reporting Time: Before 8:45 AM<br/>
           📍 Venue: Sail Hall, St. Joseph’s College</p>
+
+  <p style="background-color:#fef2f2; color:#991b1b; padding:10px 15px; border-radius:8px; font-weight:bold;">
+      ⚠️ Important: Students must bring their laptop.
+    </p>
 
           <div style="text-align: center; margin: 20px 0;">
             <a href="https://hackathon.jwstechnologies.com/login" 
