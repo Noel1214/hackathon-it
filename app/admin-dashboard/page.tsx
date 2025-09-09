@@ -92,7 +92,7 @@ export default function AdminDashboard() {
                             {/* Leader Details */}
                             <div className="grid sm:grid-cols-2 gap-3">
                                 <div className="space-y-1">
-                                    <p className="flex items-center gap-2"><User size={16} /> {team.teamLeader.name}</p>
+                                    <p className="flex items-center text-white gap-2"><User size={16} /> {team.teamLeader.name}</p>
                                     <p className="flex items-center gap-2 text-gray-300 text-sm"><MapPin size={16} /> {team.teamLeader.college}, {team.teamLeader.city}</p>
                                     <p className="flex items-center gap-2 text-gray-300 text-sm"><Phone size={16} /> {team.teamLeader.phoneNumber}</p>
                                     <p className="flex items-center gap-2 text-gray-300 text-sm"><Mail size={16} /> {team.teamLeader.email}</p>
