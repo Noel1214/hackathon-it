@@ -29,8 +29,8 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log("DB stored hash:", team.teamLeader.password);
-    console.log("Plain password received:", password);
+    // console.log("DB stored hash:", team.teamLeader.password);
+    // console.log("Plain password received:", password);
 
     // ✅ Compare password
     const isMatch = await bcrypt.compare(password, team.teamLeader.password);
