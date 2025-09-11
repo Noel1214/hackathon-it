@@ -106,10 +106,28 @@ export default function AdminDashboard() {
 
     if (loading)
         return (
-            <div className="min-h-screen flex items-center justify-center text-purple-400">
+            <div className="min-h-screen bg-black flex items-center justify-center text-purple-400">
                 Loading...
             </div>
         );
+
+    const handleDelete = async (teamId: string) => {
+        if (!confirm("Are you sure you want to delete this team?")) return;
+
+        try {
+            const res = await fetch(`/api/admin/teams/${teamId}`, {
+                method: "DELETE",
+            });
+
+            if (res.ok) {
+                await fetchTeams(); // refresh after deletion
+            } else {
+                console.error("Failed to delete team");
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#0c0c0f] text-gray-200 p-6">
@@ -135,10 +153,10 @@ export default function AdminDashboard() {
                                 <div className="flex items-center gap-2">
                                     <span
                                         className={`px-3 py-1 rounded-full text-white ${team.payment.status === "pending"
-                                            ? "bg-yellow-500"
-                                            : team.payment.status === "approved"
-                                                ? "bg-green-500"
-                                                : "bg-red-500"
+                                                ? "bg-yellow-500"
+                                                : team.payment.status === "approved"
+                                                    ? "bg-green-500"
+                                                    : "bg-red-500"
                                             }`}
                                     >
                                         {team.payment.status.toUpperCase()}
@@ -151,7 +169,16 @@ export default function AdminDashboard() {
                                     >
                                         <Pencil size={16} />
                                     </button>
+
+                                    {/* 🗑️ Delete button */}
+                                    <button
+                                        onClick={() => handleDelete(team._id)}
+                                        className="p-2 rounded-full bg-red-600/30 hover:bg-red-600"
+                                    >
+                                        🗑️
+                                    </button>
                                 </div>
+
                             </div>
 
                             {/* Leader Details */}
