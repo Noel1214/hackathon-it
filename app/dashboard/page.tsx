@@ -331,7 +331,7 @@ export default function Dashboard() {
                                 {/* Show GPay button only if payment pending */}
                                 {team.payment?.status === "pending" && (
                                     <a
-                                        href={`upi://pay?pa=rakeshjoe52-1@oksbi&pn=Rakesh%20Joe&am=${(team.teamMembers.length + 1) * 200}&cu=INR&tn=${team.teamId}`}
+                                        href={`upi://pay?pa=rakeshjoe52@oksbi&pn=Rakesh%20Joe&am=${(team.teamMembers.length + 1) * 200}&cu=INR&tn=${team.teamId}`}
                                         className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded text-sm sm:text-base"
                                     >
                                         Pay via GPay

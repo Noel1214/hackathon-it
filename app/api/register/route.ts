@@ -77,7 +77,7 @@ export async function POST(req: Request) {
 
     // 6. Prepare email
     const paymentAmount = finalTeamSize * 200;
-    const upiId = "rakeshjoe52-1@oksbi";
+    const upiId = "rakeshjoe52@oksbi";
 
     const msg = {
       to: data.teamLeader.email,
