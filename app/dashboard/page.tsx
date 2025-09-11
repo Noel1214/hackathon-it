@@ -33,6 +33,7 @@ interface TeamData {
     teamLeader: {
         name: string;
         college: string;
+        department: string;
         city: string;
         phoneNumber: string;
         email: string;
@@ -276,11 +277,12 @@ export default function Dashboard() {
                                     <h3 className="text-lg font-bold mb-4 text-purple-400">Team Leader</h3>
                                     <p className="font-semibold text-white">{team.teamLeader.name}</p>
                                     <p className="flex items-center gap-2 text-sm sm:text-base text-gray-300 mt-2">
-                                        <MapPin size={16} /> {team.teamLeader.college}, {team.teamLeader.city}
+                                        <MapPin size={16} /> {team.teamLeader.college},<br /> {team.teamLeader.department},<br /> {team.teamLeader.city}
                                     </p>
                                     <p className="flex items-center gap-2 text-sm sm:text-base text-gray-300">
                                         <Phone size={16} /> {team.teamLeader.phoneNumber}
                                     </p>
+
                                     <p className="flex items-center gap-2 text-sm sm:text-base text-gray-300">
                                         <Mail size={16} /> {team.teamLeader.email}
                                     </p>
@@ -562,6 +564,6 @@ export default function Dashboard() {
                     </TabsContent> */}
                 </Tabs>
             </main>
-        </div>
+        </div >
     );
 }
