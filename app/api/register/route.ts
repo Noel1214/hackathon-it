@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 import sgMail from "@sendgrid/mail";
 import { connect } from "@/dbconfig/db";
 import Team from "@/models/team.model";
@@ -19,6 +19,7 @@ interface TeamLeader {
   name: string;
   email: string;
   college: string;
+  department: string;
   city: string;
   phoneNumber: string;
   password: string;
