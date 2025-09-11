@@ -4,70 +4,102 @@ import Team from "@/models/team.model";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-export async function PUT(
+// ✅ GET single team (auth required)
+export async function GET(
   req: Request,
-  context: { params: Promise<{ id: string }> } // 👈 params must be awaited
+  { params }: { params: { id: string } }
 ) {
   try {
     await connect();
-
-    // ✅ Await cookies
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
-    // ✅ Verify token
-    let decoded;
+    if (!token)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    interface JwtPayload {
+      teamId: string;
+      // add other properties if needed
+      [key: string]: unknown;
+    }
+    let decoded: JwtPayload;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
-        teamId: string;
-      };
+      decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
     } catch {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    // ✅ Await params
-    const { id } = await context.params;
-    if (decoded.teamId !== id) {
+    // Make sure the token matches the requested team ID
+    if (decoded.teamId !== params.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const team = await Team.findById(params.id);
+    if (!team)
+      return NextResponse.json({ error: "Team not found" }, { status: 404 });
+
+    return NextResponse.json(team, { status: 200 });
+  } catch (err) {
+    console.error("❌ Error fetching team:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+// ✅ PUT update team
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    await connect();
+    const { id } = params;
+    const data = await req.json();
+
+    const { teamLeader, teamMembers } = data;
+    if (!teamLeader || !teamMembers) {
       return NextResponse.json(
-        { error: "You are not allowed to update this team" },
-        { status: 403 }
+        { error: "Missing teamLeader or teamMembers" },
+        { status: 400 }
       );
     }
 
-    const body = await req.json();
-    const { teamLeader, teamMembers } = body;
+    const { name, email, phoneNumber, city, college, department } = teamLeader;
+    if (!name || !email || !phoneNumber || !city || !college || !department) {
+      return NextResponse.json(
+        { error: "All leader fields are required" },
+        { status: 400 }
+      );
+    }
 
-    const team = await Team.findById(id);
-    if (!team) {
+    const updatedTeam = await Team.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          "teamLeader.name": teamLeader.name,
+          "teamLeader.email": teamLeader.email,
+          "teamLeader.phoneNumber": teamLeader.phoneNumber,
+          "teamLeader.city": teamLeader.city,
+          "teamLeader.college": teamLeader.college,
+          "teamLeader.department": teamLeader.department,
+          "teamLeader.teamSize": teamMembers.length + 1,
+          teamMembers,
+        },
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedTeam)
       return NextResponse.json({ error: "Team not found" }, { status: 404 });
-    }
-
-    if (teamLeader) {
-      team.teamLeader.name = teamLeader.name || team.teamLeader.name;
-      team.teamLeader.college = teamLeader.college || team.teamLeader.college;
-      team.teamLeader.city = teamLeader.city || team.teamLeader.city;
-      team.teamLeader.phoneNumber =
-        teamLeader.phoneNumber || team.teamLeader.phoneNumber;
-      team.teamLeader.email = teamLeader.email || team.teamLeader.email;
-      team.teamLeader.teamSize =
-        teamLeader.teamSize || team.teamLeader.teamSize;
-    }
-
-    if (teamMembers) {
-      team.teamMembers = teamMembers;
-    }
-
-    await team.save();
 
     return NextResponse.json(
-      { message: "Team updated successfully", team },
+      { message: "Team updated successfully", team: updatedTeam },
       { status: 200 }
     );
   } catch (err) {
     console.error("❌ Error updating team:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update team" },
+      { status: 500 }
+    );
   }
 }
