@@ -18,6 +18,7 @@ interface TeamData {
     teamLeader: {
         name: string;
         college: string;
+        department: string;
         city: string;
         phoneNumber: string;
         email: string;
@@ -160,9 +161,10 @@ export default function AdminDashboard() {
                                         <User size={16} /> {team.teamLeader.name}
                                     </p>
                                     <p className="flex items-center gap-2 text-gray-300 text-sm">
-                                        <MapPin size={16} /> {team.teamLeader.college},{" "}
+                                        <MapPin size={16} /> {team.teamLeader.college},<br /> {team.teamLeader.department}, <br />
                                         {team.teamLeader.city}
                                     </p>
+
                                     <p className="flex items-center gap-2 text-gray-300 text-sm">
                                         <Phone size={16} /> {team.teamLeader.phoneNumber}
                                     </p>

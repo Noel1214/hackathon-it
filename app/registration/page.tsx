@@ -19,10 +19,11 @@ const TeamRegistration: React.FC = () => {
     const [teamLeader, setTeamLeader] = useState({
         name: "",
         college: "",
+        department: "",
         city: "",
         phoneNumber: "",
         email: "",
-        password: "",          // 🔑 added
+        password: "",
         confirmPassword: "",
         teamSize: 1,
     });
@@ -80,6 +81,7 @@ const TeamRegistration: React.FC = () => {
                     name: teamLeader.name,
                     college: teamLeader.college,
                     city: teamLeader.city,
+                    department: teamLeader.department,
                     phoneNumber: teamLeader.phoneNumber,
                     email: teamLeader.email,
                     password: teamLeader.password,
@@ -195,6 +197,20 @@ const TeamRegistration: React.FC = () => {
                                 />
                             </div>
 
+                            <div>
+                                <label className="block text-sm font-medium text-white mb-1">
+                                    Department *
+                                </label>
+                                <input
+                                    type="text"
+                                    name="department"
+                                    value={teamLeader.department}
+                                    onChange={handleInputChange}
+                                    placeholder="Enter your department name"
+                                    className="w-full rounded-lg bg-black border border-gray-700 text-white px-4 py-2 focus:outline-none focus:border-purple-500"
+                                    required
+                                />
+                            </div>
                             <div>
                                 <label className="block text-sm font-medium text-white mb-1">
                                     City/Place *

@@ -17,6 +17,7 @@ export interface TeamDocument extends Document {
   teamLeader: {
     name: string;
     college: string;
+    department: string;
     city: string;
     phoneNumber: string;
     email: string;
@@ -42,6 +43,7 @@ const TeamMemberSchema = new Schema<TeamMember>({
 const TeamLeaderSchema = new Schema({
   name: { type: String, required: true },
   college: { type: String, required: true },
+  department: { type: String, required: true },
   city: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   email: { type: String, required: true },
