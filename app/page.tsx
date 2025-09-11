@@ -85,7 +85,7 @@ export default function Home() {
                 return (
                   <div
                     key={label}
-                    className="bg-[#111] px-4 py-3 rounded-lg border border-purple-900/40 shadow-lg min-w-[80px]"
+                    className="bg-[#111] mt-8 pl-2 pr-2 px-4 py-3 rounded-lg border border-purple-900/40 shadow-lg min-w-[80px]"
                   >
                     <motion.p
                       key={value}
