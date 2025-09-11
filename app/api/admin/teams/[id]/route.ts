@@ -4,10 +4,11 @@ import Team from "@/models/team.model";
 
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   await connect();
-  const { id } = context.params; // ✅ access params from context
+  const { id } = await context.params; // ✅ await the params
+
   const body = await req.json();
 
   try {
