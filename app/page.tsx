@@ -7,7 +7,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { IoMailOutline } from "react-icons/io5";
 import { BsTelephone } from "react-icons/bs";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 // Define types for background element properties
 interface BackgroundElement {
